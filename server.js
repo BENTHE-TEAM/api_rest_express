@@ -22,7 +22,7 @@ DB.authenticate()
   .then(() => {
     app.listen(process.env.SERVER_PORT, () => {
       console.log(
-        `This dddd server is rouning on port ${process.env.SERVER_PORT}`
+        `This server is rouning on http://localhost:${process.env.SERVER_PORT}`
       );
     });
   })
