@@ -14,4 +14,8 @@ let sequelize = new Sequelize(
   }
 );
 
+sequelize.sync((err) => {
+  console.log("Database Sync errror", err);
+});
+
 module.exports = sequelize;
