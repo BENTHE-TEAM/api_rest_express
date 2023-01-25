@@ -39,55 +39,55 @@ router.get("/:id", (req, res) => {
 
       return res.json({ data: user });
     })
-    .catch(err, {
-      message: "Database error",
-      error: err,
-    });
+    .catch((err) =>
+      res.status(500).json({
+        message: "Database Error",
+        error: err,
+      })
+    );
 });
 
 router.put("", (req, res) => {
   const { firstName, lastName, pseudo, email, password } = req.body;
 
-  console.log("benthe: ", req.body);
-
+  // Validation des données reçues
   if (!firstName || !lastName || !pseudo || !email || !password) {
-    return res.status(400).json({
-      message: "Missing data",
-    });
+    return res.status(400).json({ message: "Missing Data" });
   }
 
   User.findOne({ where: { email: email }, raw: true })
     .then((user) => {
+      // Vérification si l'utilisateur existe déjà
       if (user !== null) {
-        return res.status(400).json({
-          message: `The user ${email} already exists !`,
-        });
+        return res
+          .status(409)
+          .json({ message: `The user ${nom} already exists !` });
       }
 
+      // Hashage du mot de passe utilisateur
       bcrypt
-        .hash(password, parseInt(process.env.BCRYP_SALT_ROUND))
+        .hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
         .then((hash) => {
           req.body.password = hash;
 
+          // Céation de l'utilisateur
           User.create(req.body)
-            .then({ message: "User created", data: user })
-            .catch(err, {
-              message: "Database error",
-              error: err,
-            });
+            .then((user) => res.json({ message: "User Created", data: user }))
+            .catch((err) =>
+              res.status(500).json({ message: "Database Error", error: err })
+            );
         })
-        .catch((err) => {
-          res.status(400).send({ message: "Hsh process error", error: err });
-        });
+        .catch((err) =>
+          res.status(500).json({ message: "Hash Process Error", error: err })
+        );
     })
-    .catch(err, {
-      message: "Database error",
-      error: err,
-    });
+    .catch((err) =>
+      res.status(500).json({ message: "Database Error", error: err })
+    );
 });
 
 router.patch("/:id", (req, res) => {
-  let userId = parent(req.params.id);
+  let userId = parseInt(req.params.id);
 
   if (!userId) {
     return res.status(400).json({ message: "Missing parameter" });
@@ -99,13 +99,13 @@ router.patch("/:id", (req, res) => {
         return res.status(404).json({ message: "this user is not exist !" });
       }
 
-      User.update(req.body, { where: { id: userId } }).then((user) => {
-        res
-          .json({ message: "User updated" })
-          .catch((err) =>
-            res.status(500).json({ message: "Database error", error: err })
-          );
-      });
+      User.update(req.body, { where: { id: userId } })
+        .then((user) => {
+          res.json({ message: "User updated" });
+        })
+        .catch((err) =>
+          res.status(500).json({ message: "Database error", error: err })
+        );
     })
     .catch((err) =>
       res.status(500).json({ message: "Database error", error: err })
@@ -113,7 +113,7 @@ router.patch("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  let userId = parent(req.params.id);
+  let userId = parseInt(req.params.id);
 
   if (!userId) {
     return res.status(400).json({ message: "Missing parameter" });
