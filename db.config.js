@@ -1,4 +1,5 @@
-// Imprt des module necessaire
+/************************************/
+/*** Import des modules nécessaires */
 const { Sequelize } = require("sequelize");
 
 // Connexion a la base de donnees
@@ -14,8 +15,21 @@ let sequelize = new Sequelize(
   }
 );
 
-sequelize.sync((err) => {
-  console.log("Database Sync errror", err);
-});
+/*** Mise en place des relations */
+const db = {};
 
-module.exports = sequelize;
+db.sequelize = sequelize;
+db.User = require("./models/user")(sequelize);
+// db.Cocktail = require("./models/cocktail")(sequelize);
+
+// db.User.hasMany(db.Cocktail, { foreignKey: "user_id", onDelete: "cascade" });
+// db.Cocktail.belongsTo(db.User, { foreignKey: "user_id" });
+
+/*********************************/
+/*** Synchronisation des modèles */
+// sequelize.sync(err => {
+//     console.log('Database Sync Error', err)
+// })
+db.sequelize.sync({ alter: true });
+
+module.exports = db;

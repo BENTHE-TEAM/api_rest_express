@@ -1,7 +1,7 @@
 /***********************************/
 /*** Import des module nécessaires */
 const express = require("express");
-const userCtrl = require("../controllers/user");
+const authCtrl = require("../controllers/auth");
 
 /***************************************/
 /*** Récupération du routeur d'express */
@@ -11,25 +11,13 @@ let router = express.Router();
 /*** Middleware pour logger dates de requete */
 router.use((req, res, next) => {
   const event = new Date();
-  console.log("User Time:", event.toString());
+  console.log("AUTH Time:", event.toString());
   next();
 });
 
 /**********************************/
-/*** Routage de la ressource User */
+/*** Routage de la ressource Auth */
 
-router.get("/", userCtrl.getAllUsers);
-
-router.get("/:id", userCtrl.getUser);
-
-router.put("", userCtrl.addUser);
-
-router.patch("/:id", userCtrl.updateUser);
-
-router.post("/untrash/:id", userCtrl.untrashUser);
-
-router.delete("/trash/:id", userCtrl.trashUser);
-
-router.delete("/:id", userCtrl.deleteUser);
+router.post("/login", authCtrl.login);
 
 module.exports = router;
