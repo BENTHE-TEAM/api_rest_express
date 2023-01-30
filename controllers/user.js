@@ -43,8 +43,10 @@ exports.getUser = async (req, res) => {
 exports.addUser = async (req, res) => {
   const { firstName, lastName, email, pseudo, password } = req.body;
 
+  console.log(req.body);
+
   // Validation des données reçues
-  if (firstName || !lastName || !email || !pseudo || !password) {
+  if (!firstName || !lastName || !email || !pseudo || !password) {
     return res.status(400).json({ message: "Missing Data" });
   }
 

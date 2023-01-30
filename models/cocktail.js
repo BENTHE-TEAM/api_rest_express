@@ -1,29 +1,44 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const DB = require("./db.config");
+/************************************/
+/*** Import des modules nécessaires */
+const { DataTypes } = require("sequelize");
 
-const Cocktail = DB.define(
-  "Cocktail",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+/*******************************/
+/*** Définition du modèle Cocktail */
+module.exports = (sequelize) => {
+  return (Cocktail = sequelize.define(
+    "Cocktail",
+    {
+      id: {
+        type: DataTypes.INTEGER(10),
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER(10),
+        allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING(100),
+        defaultValue: "",
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        defaultValue: "",
+        allowNull: false,
+      },
+      recipe: {
+        type: DataTypes.TEXT,
+        defaultValue: "",
+        allowNull: false,
+      },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-    },
-    recipe: {
-      type: DataTypes.TEXT,
-    },
-  },
-  { paranoid: true }
-);
+    { paranoid: true }
+  )); // Ici pour faire du softDelete
+};
 
-module.exports = Cocktail;
+/****************************************/
+/*** Ancienne Synchronisation du modèle */
+// Cocktail.sync()
+// Cocktail.sync({force: true})
+// Cocktail.sync({alter: true})
